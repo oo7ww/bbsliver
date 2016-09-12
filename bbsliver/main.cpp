@@ -46,8 +46,6 @@ int main() {
 	Board* ini_board = new Board;
 	string ini_b;
 	
-	
-
 	cout << "this is a cut" << endl;
 
 	Plain_user* plain = new Plain_user;
@@ -83,13 +81,13 @@ int main() {
 		string mode;
 		cin.ignore();
 		std::getline(std::cin, mode);
-		cout << mode;
+		cout << mode << endl;
 		if (mode == "plain user") {
 				cout << "what do you want" << endl;
 				//cin.ignore();
 				string event;
 				std::getline(std::cin, event);
-				cout << event;
+				cout << event << endl;
 				while (event != "over") {
 					int cnt = 0;
 					if (event == "new user") {
@@ -131,6 +129,11 @@ int main() {
 								for (vector<Board*>::iterator it = blist.begin(); it != blist.end(); it++) {
 									(*it)->show_p();
 								}
+							}
+							else if (option == "show my information") {
+								//(forum->get_user())[cnt - 1]
+								//Plain_user* p = new Plain_user;
+								//p = forum->get_user()
 							}
 							else if (option == "write a post") {
 								string id_board;
@@ -298,6 +301,34 @@ int main() {
 										}
 									}
 									adm->appoint((forum->get_user())[tick], adb, forum);
+								}
+								else if (action == "dismiss a boardhost") {
+									Admin_user* dis_adm = new Admin_user;
+									Plain_user* dis_adp = new Plain_user;
+									Board* dis_adb = new Board;
+									string dis_ap_user;
+									string dis_ap_board;
+									int dis_tick;
+
+									dis_adm->set_username(Ad_list[tose - 1]->get_username());
+									dis_adm->set_id(Ad_list[tose - 1]->get_id());
+									dis_adm->set_password(Ad_list[tose - 1]->get_password());
+									dis_adm->set_state(1);
+
+									cout << "input a username" << endl;
+									cin >> dis_ap_user;
+									cout << "input a board" << endl;
+									cin >> dis_ap_board;
+
+									dis_adb = forum->search_board(dis_ap_board);
+
+									for (int h = 0; h < (forum->get_user()).size(); ++h) {
+										if ((forum->get_user())[h]->get_username() == dis_ap_user) {
+											dis_tick = h;
+											break;
+										}
+									}
+									dis_adm->dismiss((forum->get_user())[dis_tick], dis_adb, forum);
 								}
 								std::getline(std::cin, action);
 							}

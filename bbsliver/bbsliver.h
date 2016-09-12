@@ -340,14 +340,26 @@ public:
 	virtual string get_id() {
 		return this->id;
 	};
+	virtual void set_id(string id) {
+		this->id = id;
+	};
 	virtual string get_username() {
 		return this->username;
+	};
+	virtual void set_username(string name) {
+		this->username = name;
 	};
 	virtual string get_password() {
 		return this->password;
 	};
+	virtual void set_password(string word) {
+		this->password = word;
+	};
 	virtual int get_state() {
 		return this->state;
+	};
+	virtual void set_state(int s) {
+		this->state = s;
 	};
 	//virtual void show_post() = 0; //显示所有帖子
 
@@ -474,6 +486,27 @@ public:
 		vector<User*> list = forum->get_user();
 		vector<User*>::iterator it = find(list.begin(), list.end(), p_user);
 		new_moderator->set_board(board);
+		*it = new_moderator;
+		forum->update_user(list);
+		//return new_moderator;
+	};
+	void dismiss(User* p_user, Board* board, Forum* forum) { //任命撤销版主
+		Plain_user* new_moderator = new Plain_user;
+		string id = p_user->get_id();
+		string username = p_user->get_username();
+		string password = p_user->get_password();
+		int state = p_user->get_state();
+
+		new_moderator->set_id(id);
+		new_moderator->set_username(username);
+		new_moderator->set_password(password);
+		new_moderator->set_state(state);
+		//new_moderator->username = p_user->username;
+		//new_moderator->password = p_user->password;
+
+		vector<User*> list = forum->get_user();
+		vector<User*>::iterator it = find(list.begin(), list.end(), p_user);
+		//new_moderator->set_board(board);
 		*it = new_moderator;
 		forum->update_user(list);
 		//return new_moderator;
