@@ -39,6 +39,15 @@ public:
 		this->content = content;
 		this->author = author;
 	};
+	friend istream& operator>>(istream& is, Comment& comment) {
+		is >> comment.author >> comment.content >> comment.currenttime;
+		return is;
+	};
+	friend ostream& operator<<(ostream& os, Comment& comment) {
+		os << comment.author <<" " << comment.content << " " << comment.currenttime;
+		return os;
+	};
+
 	float get_time() { //获取评论时间
 		return this->currenttime;
 	};
@@ -90,6 +99,14 @@ public:
 		this->title = title;
 		this->content = content;
 		this->currenttime = now_time;
+	};
+	friend istream& operator>>(istream& is, Post& post) {
+		is >> post.id >> post.title >> post.content;
+		return is;
+	};
+	friend ostream& operator<<(ostream& os, Post& post) {
+		os << post.id << " " << post.title << " " << post.content;
+		return os;
 	};
 	void add_comment(Comment* comment) { //添加评论
 		this->comment.push_back(comment);
@@ -169,12 +186,6 @@ public:
 		return find(list.begin(), list.end(), post);
 	};
 	void delete_post(Post* post) { //删除帖子
-		//vector<Post*>::iterator it = search_post(post);
-		//vector<Post*> list = this->list_post;
-		//if (it != list.end()) {
-		//	list.erase(it);
-			//it = NULL;
-		//}
 		vector<Post*>::iterator it;
 		for (it = (this->list_post).begin(); it != (this->list_post).end(); ) {
 			if (*it == post) {
@@ -185,8 +196,6 @@ public:
 				++it;
 			}
 		}
-
-
 	};
 	Post* search_post2(string id) {
 		vector<Post*> list = this->list_post;
@@ -203,6 +212,10 @@ public:
 		else
 			return nullptr;
 	};
+	void show_p(string post) {
+		(this->search_post2(post))->show_d();
+		//post->show_d();
+	}
 	void show_p() { //输出版面下所有帖子
 		vector<Post*> list = this->list_post;
 		for (vector<Post*>::iterator it = list.begin(); it != list.end(); ++it) {
@@ -219,6 +232,14 @@ protected:
 	string password; //密码
 	int state;       //状态
 public:
+	friend istream& operator >> (istream& is, User& user) {
+		is >> user.id >> user.username >> user.password >> user.state;
+		return is;
+	};
+	friend ostream& operator << (ostream& os, User& user) {
+		os << user.id << " " << user.username << " " << user.password << " " << user.state;
+		return os; 
+	};
 	virtual void initialize(/*string& id, string& username, string& password, int state*/) = 0; //初始化，设置user属性
 	virtual void show_info() = 0; //user个人信息
 
@@ -270,6 +291,7 @@ public:
 		else
 			return nullptr;
 	};
+
 /*	User* search_user(string username) {
 		vector<User*> list = this->list_user;
 		User* ptr = new User;

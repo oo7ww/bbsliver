@@ -1,5 +1,6 @@
-#include  <iostream>
+#include <iostream>
 #include <ctime>
+#include <fstream>
 #include"bbsliver.h" 
 
 using namespace std;
@@ -9,12 +10,25 @@ void get_start(Forum* forum) {
 	vector<User*> list_user;
 	Board* ini_board = new Board;
 	string ini_b;
+	ifstream user_ifile;
+	ifstream post_ifile;
+	ifstream comt_ifile;
+	ofstream user_ofile;
+	ofstream post_ofile;
+	ofstream comt_ofile;
 
+	user_ifile.open("user.txt");
 	cout << "this is a cut" << endl;
 
-	Plain_user* plain = new Plain_user;
-	plain->initialize();
-	list_user.push_back(plain);
+	Plain_user plain; 
+	//plain->initialize();
+	user_ifile >> plain;
+	while (!user_ifile.eof()) {
+		user_ifile >> plain;
+		cout << plain;
+	}
+
+	//list_user.push_back(&plain);
 
 	cout << "this is a cut" << endl;
 
@@ -43,38 +57,101 @@ int main() {
 
 	vector<Board*> list_board;
 	vector<User*> list_user;
+	vector<Post*> list_post;
 	Board* ini_board = new Board;
 	string ini_b;
 	
-	cout << "this is a cut" << endl;
-
-	Plain_user* plain = new Plain_user;
-	plain->initialize();
-	list_user.push_back(plain);
-
-	cout << "this is a cut" << endl;
-
-	Admin_user* adminster = new Admin_user;
-	adminster->initialize();
-	list_user.push_back(adminster);
-	fflush(stdin);
-
 	ini_board->initialize("1024");
-	list_board.push_back(ini_board);
+	//list_board.push_back(ini_board);
 
+	cout << "this is a cut" << endl;
+	ifstream user_ifile;
+	ifstream post_ifile;
+	ifstream comt_ifile;
+	ofstream user_ofile;
+	ofstream post_ofile;
+	ofstream comt_ofile;
+	
+	
+	comt_ifile.open("comment.txt");
+	cout << "this is a cut" << endl;
+
+	
+	//plain->initialize();
+	//user_ifile >> plain;
+	
+	//载入用户信息
+	user_ifile.open("user.txt");
+	int file_tag = 0;
+	while (!user_ifile.eof()) {
+		if (file_tag = 0) {
+			Admin_user* admin = new Admin_user;
+			user_ifile >> (*admin);
+			list_user.push_back(admin);
+			cout << admin->get_username() << endl;
+		}
+		else {
+			Plain_user* plain = new Plain_user;
+			user_ifile >> (*plain);
+			list_user.push_back(plain);     
+			cout << plain->get_username() << endl;
+		}
+	}
+	user_ifile.close();
+
+	for (vector<User*>::iterator it = list_user.begin(); it != list_user.end(); ++it) {
+		cout << *(*it) << endl;
+	}
+
+	//载入帖子信息
+	post_ifile.open("post.txt");
+	while (!post_ifile.eof()) {
+		Post* post = new Post;
+		post_ifile >> (*post);
+		ini_board->add_post(post);
+		//cout << plain->get_username() << endl;
+	}
+	post_ifile.close();
+
+	list_post = ini_board->get_list();
+
+	//载入评论信息，并关联至对应帖子
+	comt_ifile.open("comment.txt");
+	while (!comt_ifile.eof()) {
+		Comment* comment = new Comment;
+		comt_ifile >> (*comment);
+		string comment_id = comment->get_author();
+		string post_id = comment_id.substr(0, 5);
+		Post* post_ptr = new Post;
+		post_ptr = ini_board->search_post2(post_id);
+		post_ptr->add_comment(comment);
+	}
+	comt_ifile.close();
+
+	list_board.push_back(ini_board);
+	//Plain_user* plain = new Plain_user;
+	//plain->initialize();
+	//list_user.push_back(plain);
+
+//	cout << "this is a cut" << endl;
+
+//	Admin_user* adminster = new Admin_user;
+//	adminster->initialize();
+//	list_user.push_back(adminster);
+//	fflush(stdin);
+
+/*
 	cout << "this is a cut" << endl;
 
 	Monderator* boardhost = new Monderator;
 	boardhost->initialize();
 	boardhost->set_board(ini_board);
 	list_user.push_back(boardhost);
-
+*/	
 	forum->update_board(list_board);
 	forum->update_user(list_user);
 
 	string knock;
-	//cin.ignore();
-	//std::getline(std::cin, knock);
 	cin >> knock;
 	while (knock != "out") {
 		cout << "which mode" << endl;
@@ -84,7 +161,6 @@ int main() {
 		cout << mode << endl;
 		if (mode == "plain user") {
 				cout << "what do you want" << endl;
-				//cin.ignore();
 				string event;
 				std::getline(std::cin, event);
 				cout << event << endl;
@@ -96,6 +172,9 @@ int main() {
 						(forum->get_user()).push_back(p_user);
 						list_user.push_back(p_user);
 						forum->update_user(list_user);
+						user_ofile.open("user.txt", ios::app);
+						user_ofile << (*p_user);
+						user_ofile.close();
 						cnt = list_user.size();//(forum->get_user()).size();
 						cout << cnt << endl;
 					}
@@ -129,6 +208,13 @@ int main() {
 								for (vector<Board*>::iterator it = blist.begin(); it != blist.end(); it++) {
 									(*it)->show_p();
 								}
+							}
+							else if(option == "search a post"){
+								string id_post;
+								Post* s_post = new Post;
+								cout << "which post" << endl;
+								cin >> id_post;
+								ini_board->show_p(id_post);
 							}
 							else if (option == "show my information") {
 								//(forum->get_user())[cnt - 1]
@@ -228,8 +314,22 @@ int main() {
 								m_board = forum->search_board(m_board_s);
 								m_post = m_board->search_post2(m_post_s);
 								m_board->delete_post(m_post);
-
 								m_board->show_p();
+							}
+							else if (option == "upset a post") {
+								string uppost;
+								Post* top = new Post;
+								cout << "which post to be set top" << endl;
+								cin >> uppost;
+								top = (forum->search_board("1024"))->search_post2(uppost);
+								vector<Post*>::iterator from = find(list_post.begin(), list_post.end(), top);
+								vector<Post*>::iterator to = list_post.begin();
+								if (from < to) {
+									rotate(from, from + 1, to + 1);
+								}
+								else if (from > to) {
+									rotate(to, from, from + 1);
+								}
 							}
 							std::getline(std::cin, option);
 						}
