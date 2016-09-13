@@ -109,7 +109,7 @@ public:
 		return os;
 	};
 	void add_comment(Comment* comment) { //Ìí¼ÓÆÀÂÛ
-		this->comment.push_back(comment);
+		(this->comment).push_back(comment);
 	};
 	void delete_comment(Comment* comment) { //É¾³ıÆÀÂÛ
 		vector<Comment*>::iterator it;

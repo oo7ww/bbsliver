@@ -58,6 +58,7 @@ int main() {
 	vector<Board*> list_board;
 	vector<User*> list_user;
 	vector<Post*> list_post;
+	vector<Comment*> list_comment;
 	Board* ini_board = new Board;
 	string ini_b;
 	
@@ -81,6 +82,36 @@ int main() {
 	//user_ifile >> plain;
 	
 	//载入用户信息
+	
+
+	//载入帖子信息
+	post_ifile.open("post.txt");
+	while (!post_ifile.eof()) {
+		Post* post = new Post;
+		post_ifile >> (*post);
+		ini_board->add_post(post);
+		//cout << plain->get_username() << endl;
+	}
+	post_ifile.close();
+	
+	//ini_board->show_p();
+
+	list_post = ini_board->get_list();
+
+	//载入评论信息，并关联至对应帖子
+/*	comt_ifile.open("comment.txt");
+	while (!comt_ifile.eof()) {
+		Comment* comment = new Comment;
+		comt_ifile >> (*comment);
+		string comment_id = comment->get_author();
+		string post_id = comment_id.substr(0, 5);
+		Post* post_ptr = new Post;
+		post_ptr = ini_board->search_post2(post_id);
+		cout << post_ptr;
+		post_ptr->add_comment
+	}
+	comt_ifile.close();
+*/
 	user_ifile.open("user.txt");
 	int file_tag = 0;
 	while (!user_ifile.eof()) {
@@ -93,8 +124,8 @@ int main() {
 		else {
 			Plain_user* plain = new Plain_user;
 			user_ifile >> (*plain);
-			list_user.push_back(plain);     
-			cout << plain->get_username() << endl;
+			list_user.push_back(plain);
+			//cout << plain->get_username() << endl;
 		}
 	}
 	user_ifile.close();
@@ -102,32 +133,6 @@ int main() {
 	for (vector<User*>::iterator it = list_user.begin(); it != list_user.end(); ++it) {
 		cout << *(*it) << endl;
 	}
-
-	//载入帖子信息
-	post_ifile.open("post.txt");
-	while (!post_ifile.eof()) {
-		Post* post = new Post;
-		post_ifile >> (*post);
-		ini_board->add_post(post);
-		//cout << plain->get_username() << endl;
-	}
-	post_ifile.close();
-
-	list_post = ini_board->get_list();
-
-	//载入评论信息，并关联至对应帖子
-	comt_ifile.open("comment.txt");
-	while (!comt_ifile.eof()) {
-		Comment* comment = new Comment;
-		comt_ifile >> (*comment);
-		string comment_id = comment->get_author();
-		string post_id = comment_id.substr(0, 5);
-		Post* post_ptr = new Post;
-		post_ptr = ini_board->search_post2(post_id);
-		post_ptr->add_comment(comment);
-	}
-	comt_ifile.close();
-
 	list_board.push_back(ini_board);
 	//Plain_user* plain = new Plain_user;
 	//plain->initialize();
@@ -151,6 +156,8 @@ int main() {
 	forum->update_board(list_board);
 	forum->update_user(list_user);
 
+	forum->show_bp();
+
 	string knock;
 	cin >> knock;
 	while (knock != "out") {
@@ -169,14 +176,14 @@ int main() {
 					if (event == "new user") {
 						Plain_user* p_user = new Plain_user;
 						p_user->initialize();
-						(forum->get_user()).push_back(p_user);
+						//(forum->get_user()).push_back(p_user);
 						list_user.push_back(p_user);
-						forum->update_user(list_user);
-						user_ofile.open("user.txt", ios::app);
-						user_ofile << (*p_user);
-						user_ofile.close();
-						cnt = list_user.size();//(forum->get_user()).size();
-						cout << cnt << endl;
+						//forum->update_user(list_user);
+						//user_ofile.open("user.txt", ios::app);
+						//user_ofile << (*p_user);
+						//user_ofile.close();
+						//cnt = list_user.size();//(forum->get_user()).size();
+						//cout << cnt << endl;
 					}
 					else if (event == "log in") {
 						string username;
@@ -185,7 +192,9 @@ int main() {
 						cin >> username;
 						cout << "password:" << endl;
 						cin >> password;
-						vector<User*> list = forum->get_user();
+						//vector<User*> list = forum->get_user();
+						vector<User*> list = list_user;
+
 						int flag = 0;
 						for (int i = 0; i < list.size(); ++i) {
 							if (list[i]->get_username() == username && list[i]->get_password() == password) {
@@ -233,6 +242,7 @@ int main() {
 								n_post->initialize();
 								n_board = forum->search_board(id_board);
 
+								list_post.push_back(n_post);
 								n_board->add_post(n_post);
 								n_board->show_p();
 							}
@@ -253,7 +263,7 @@ int main() {
 
 								if (d_post != nullptr)
 									d_board->delete_post(d_post);
-
+								list_post = d_board->get_list();
 								d_board->show_p();
 							}
 							else if (option == "write a comment") {
@@ -272,7 +282,7 @@ int main() {
 								cin >> c_post_id;
 								//cout << "input your comment" << endl;
 								c_comment->initialize();
-
+								list_comment.push_back(c_comment);
 								c_post = c_board->search_post2(c_post_id);
 								c_post->add_comment(c_comment);
 								c_post->show_d();
@@ -315,6 +325,7 @@ int main() {
 								m_post = m_board->search_post2(m_post_s);
 								m_board->delete_post(m_post);
 								m_board->show_p();
+								list_post = m_board->get_list();
 							}
 							else if (option == "upset a post") {
 								string uppost;
@@ -440,5 +451,25 @@ int main() {
 		//std::getline(std::cin, knock);
 		cin >> knock;
 	}
+	user_ofile.open("user.txt");
+	for (vector<User*>::iterator it = list_user.begin(); it != list_user.end(); it++) {
+		user_ofile << *(*it);
+	}
+	user_ofile.close();
+
+	post_ofile.open("post.txt");
+	for (vector<Post*>::iterator it = list_post.begin(); it != list_post.end(); it++) {
+		post_ofile << *(*it);
+	}
+	post_ofile.close();
+
+	comt_ofile.open("comment.txt");
+	for (vector<Comment*>::iterator it = list_comment.begin(); it != list_comment.end(); it++) {
+		comt_ofile << *(*it);
+	}
+	comt_ofile.close();
+	//cnt = list_user.size();//(forum->get_user()).size();
+	//forum->update_user(list_user);
+	//forum->update_board
 	return 0;
 }
