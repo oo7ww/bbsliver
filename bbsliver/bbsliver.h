@@ -39,12 +39,14 @@ public:
 		this->content = content;
 		this->author = author;
 	};
+	//">>" overloaded
 	friend istream& operator>>(istream& is, Comment& comment) {
 		is >> comment.author >> comment.content >> comment.currenttime;
 		return is;
 	};
+	//"<<" overloaded
 	friend ostream& operator<<(ostream& os, Comment& comment) {
-		os << comment.author <<" " << comment.content << " " << comment.currenttime;
+		os << comment.author <<" " << comment.content << " " << comment.currenttime << endl;
 		return os;
 	};
 
@@ -54,7 +56,7 @@ public:
 	string get_content() { //获取评论内容
 		return this->content;
 	};
-	string get_author() {
+	string get_author () {
 		return this->author;
 	}
 	void show_c() { //输出评论内容
@@ -75,7 +77,7 @@ private:
 public:
 	void initialize(/*string& id, string& title, string& content, float time*/) { //初始化，设置post属性		
 		string id;
-		string title;
+		string title; 
 		string content;
 		string trash;
 		//fflush(stdin);
@@ -100,12 +102,14 @@ public:
 		this->content = content;
 		this->currenttime = now_time;
 	};
-	friend istream& operator>>(istream& is, Post& post) {
+
+	friend istream& operator>>(istream& is, Post& post) {//">>"overloaded
 		is >> post.id >> post.title >> post.content;
 		return is;
 	};
-	friend ostream& operator<<(ostream& os, Post& post) {
-		os << post.id << " " << post.title << " " << post.content;
+
+	friend ostream& operator<<(ostream& os, Post& post) {//"<<"overloaded
+		os << post.id << " " << post.title << " " << post.content << endl;
 		return os;
 	};
 	void add_comment(Comment* comment) { //添加评论
@@ -159,7 +163,7 @@ public:
 		if (cnt != 0)
 			return ptr;
 		else
-			return nullptr;
+			return nullptr; 
 	};
 };
 

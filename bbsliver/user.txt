@@ -1,2 +1,2 @@
-001 tk tk
-002 lr lr
+001 tk tk 1
+002 lr lr 0

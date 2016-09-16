@@ -63,7 +63,6 @@ int main() {
 	string ini_b;
 	
 	ini_board->initialize("1024");
-	//list_board.push_back(ini_board);
 
 	cout << "this is a cut" << endl;
 	ifstream user_ifile;
@@ -73,33 +72,28 @@ int main() {
 	ofstream post_ofile;
 	ofstream comt_ofile;
 	
-	
-	comt_ifile.open("comment.txt");
 	cout << "this is a cut" << endl;
-
-	
-	//plain->initialize();
-	//user_ifile >> plain;
-	
-	//载入用户信息
-	
 
 	//载入帖子信息
 	post_ifile.open("post.txt");
 	while (!post_ifile.eof()) {
 		Post* post = new Post;
 		post_ifile >> (*post);
+		//cout << post->get_title();
+		list_post.push_back(post);
 		ini_board->add_post(post);
-		//cout << plain->get_username() << endl;
 	}
 	post_ifile.close();
-	
-	//ini_board->show_p();
 
-	list_post = ini_board->get_list();
+	//list_post = ini_board->get_list();
+	cout << list_post.size() << endl;
+
+	for (vector<Post*>::iterator it = list_post.begin(); it != list_post.end(); it++) {
+		cout << *(*it) << endl;
+	}
 
 	//载入评论信息，并关联至对应帖子
-/*	comt_ifile.open("comment.txt");
+	comt_ifile.open("comment.txt");
 	while (!comt_ifile.eof()) {
 		Comment* comment = new Comment;
 		comt_ifile >> (*comment);
@@ -107,19 +101,25 @@ int main() {
 		string post_id = comment_id.substr(0, 5);
 		Post* post_ptr = new Post;
 		post_ptr = ini_board->search_post2(post_id);
-		cout << post_ptr;
-		post_ptr->add_comment
+		//cout << post_ptr;
+		post_ptr->add_comment(comment);
 	}
 	comt_ifile.close();
-*/
+
 	user_ifile.open("user.txt");
 	int file_tag = 0;
+//	cout << user_ifile;
 	while (!user_ifile.eof()) {
-		if (file_tag = 0) {
+		if (file_tag == 0) {
 			Admin_user* admin = new Admin_user;
 			user_ifile >> (*admin);
 			list_user.push_back(admin);
-			cout << admin->get_username() << endl;
+		//	cout << admin->get_username() << endl;
+			//cout << admin->get_id() << endl;
+		//	cout << admin->get_password() << endl;
+			//cout << admin->get_state() << endl;
+			//cout << *admin;
+			//cout << admin->get_username() << endl;
 		}
 		else {
 			Plain_user* plain = new Plain_user;
@@ -129,7 +129,7 @@ int main() {
 		}
 	}
 	user_ifile.close();
-
+	cout << list_user.size() << endl;
 	for (vector<User*>::iterator it = list_user.begin(); it != list_user.end(); ++it) {
 		cout << *(*it) << endl;
 	}
