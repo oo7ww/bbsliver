@@ -46,7 +46,7 @@ public:
 	};
 	//"<<" overloaded
 	friend ostream& operator<<(ostream& os, Comment& comment) {
-		os << comment.author <<" " << comment.content << " " << comment.currenttime << endl;
+		os << comment.author <<" " << comment.content << " " << comment.currenttime;
 		return os;
 	};
 
@@ -109,7 +109,7 @@ public:
 	};
 
 	friend ostream& operator<<(ostream& os, Post& post) {//"<<"overloaded
-		os << post.id << " " << post.title << " " << post.content << endl;
+		os << post.id << " " << post.title << " " << post.content;
 		return os;
 	};
 	void add_comment(Comment* comment) { //添加评论
@@ -173,6 +173,16 @@ private:
 	string id; //版面id
 	vector<Post* > list_post; //版面所含帖子
 public:
+	//">>" overloaded
+	friend istream& operator >> (istream& is, Board& board) {
+		is >> board.id;
+		return is;
+	};
+	//"<<" overloaded
+	friend ostream& operator<<(ostream& os, Board& board) {
+		os << board.id;
+		return os;
+	};
 	void initialize(string id) { //初始化，设置id
 		this->id = id;
 	};
@@ -184,6 +194,9 @@ public:
 	};
 	void add_post(Post* post) { //增加帖子
 		list_post.push_back(post);
+	};
+	void set_list(vector<Post*> post) {
+		this->list_post = post;
 	};
 	vector<Post*>::iterator search_post(Post* post) { //查找帖子
 		vector<Post*> list = this->list_post;
@@ -216,8 +229,23 @@ public:
 		else
 			return nullptr;
 	};
+	Post* search_post3(string title) {
+		vector<Post*> list = this->list_post;
+		Post* ptr = new Post;
+		int cnt = 0;
+		for (vector<Post*>::iterator it = list.begin(); it != list.end(); ++it) {
+			if ((*it)->get_title() == title) {
+				cnt = 1;
+				ptr = *it;
+			}
+		}
+		if (cnt != 0)
+			return ptr;
+		else
+			return nullptr;
+	};
 	void show_p(string post) {
-		(this->search_post2(post))->show_d();
+		(this->search_post3(post))->show_d();
 		//post->show_d();
 	}
 	void show_p() { //输出版面下所有帖子
