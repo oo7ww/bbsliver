@@ -244,6 +244,7 @@ public:
 		else
 			return nullptr;
 	};
+	//重载
 	void show_p(string post) {
 		(this->search_post3(post))->show_d();
 		//post->show_d();
@@ -323,50 +324,6 @@ public:
 		else
 			return nullptr;
 	};
-
-/*	User* search_user(string username) {
-		vector<User*> list = this->list_user;
-		User* ptr = new User;
-		int cnt = 0;
-		for (vector<User*>::iterator it = list.begin(); it != list.end(); ++it) {
-			if ((*it)->get_username() == username) {
-				cnt = 1;
-				ptr = *it;
-			}
-		}
-		if (cnt != 0)
-			return ptr;
-		else
-			return nullptr;
-	};*/
-/*	int check_user() {
-		string username;
-		string password;
-		cout << "input your username" << endl;
-		cin >> username;
-		cout << "password:" << endl;
-		cin >> password;
-		vector<User*> list = this->list_user;
-		int flag = 0;
- 		for (int i = 0; i < list.size(); ++i) {
-			if (list[i]->get_username() == username && list[i]->get_id() == password) {
-				flag = 1;
-			}
-		}
-		return flag;
-*/
-		//User* user = new User;
-		//for(vector<User*>::iterator it = list.begin(); it != list.end() ;++it){
-		//	 if((*it)->get_username() == username){
-		//	 	user = *it;
-		//	 	break;
-		//	 }
-		//}
-		//if((*it)->get_username() == username && (*it)->get_password() == password){
-		//	return True;	
-		//}
-		//else return False;
-	//};
 };
 
 //普通用户

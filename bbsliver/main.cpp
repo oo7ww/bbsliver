@@ -75,15 +75,21 @@ int main() {
 	cout << "this is a cut" << endl;
 
 	//载入帖子信息
-	post_ifile.open("post.txt");
-	while (!post_ifile.eof()) {
-		Post* post = new Post;
-		post_ifile >> (*post);
-		list_post.push_back(post);
-		//ini_board->add_post(post);
+	post_ifile.exceptions(ifstream::failbit | ifstream::badbit);
+	try {
+		post_ifile.open("post.txt");
+		while (!post_ifile.eof()) {
+			Post* post = new Post;
+			post_ifile >> (*post);
+			list_post.push_back(post);
+			//ini_board->add_post(post);
+		}
+		post_ifile.close();
+		ini_board->set_list(list_post);
 	}
-	post_ifile.close();
-	ini_board->set_list(list_post);
+	catch (ifstream::failure e) {
+		cout << "Exception opening/reading file";
+	}
 	cout << list_post.size() << endl;
 
 	for (vector<Post*>::iterator it = list_post.begin(); it != list_post.end(); it++) {
@@ -91,21 +97,26 @@ int main() {
 	}
 
 	//载入评论信息，并关联至对应帖子
-	comt_ifile.open("comment.txt");
-	while (!comt_ifile.eof()) {
-		Comment* comment = new Comment;
-		comt_ifile >> (*comment);
-		string comment_id = comment->get_author();
-		string post_id = comment_id.substr(0, 5);
-		Post* post_ptr = new Post;
-		post_ptr = ini_board->search_post2(post_id);
-		if (post_ptr != nullptr) {
-			post_ptr->add_comment(comment);
-			post_ptr->show_d();
+	comt_ifile.exceptions(ifstream::failbit | ifstream::badbit);
+	try {
+		comt_ifile.open("comment.txt");
+		while (!comt_ifile.eof()) {
+			Comment* comment = new Comment;
+			comt_ifile >> (*comment);
+			string comment_id = comment->get_author();
+			string post_id = comment_id.substr(0, 5);
+			Post* post_ptr = new Post;
+			post_ptr = ini_board->search_post2(post_id);
+			if (post_ptr != nullptr) {
+				post_ptr->add_comment(comment);
+				post_ptr->show_d();
+			}
 		}
 	}
+	catch (ifstream::failure e) {
+		cout << "Exception opening/reading file";
+	}
 	comt_ifile.close();
-	
 	
 	//载入用户信息
 	int file_tag = 0;
