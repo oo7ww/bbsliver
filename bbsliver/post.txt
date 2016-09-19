@@ -1,3 +1,2 @@
-00101 goodday suchagoodday
 00102 tk sum
-00301 01 0022
+00101 goodday suchagoodday
